@@ -1,12 +1,8 @@
 import React, { useState } from "react";
-import '../App.css';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
 import PopupWithForm from './PopupWithForm';
-import ChildEditProfile from './ChildEditProfile';
-import ChildAddCard from './ChildAddCard';
-import ChildChangeAvatar from './ChildChangeAvatar';
 import ImagePopup from './ImagePopup';
 
 function App() {
@@ -15,25 +11,25 @@ function App() {
     const [isProfilePopup, setIsProfilePopup] = useState(false);
     const [isPlacePopup, setIsPlacePopup] = useState(false);
 
-    const [selectedCard, setSelectedCard] = useState(false);
+    const [selectedCard, setSelectedCard] = useState();
 
     const isEditAvatarPopupOpen = () => {
-        setIsAvatarPopup(!isAvatarPopup);
+        setIsAvatarPopup(true);
     }
 
     const isEditProfilePopupOpen = () => {
-        setIsProfilePopup(!isProfilePopup);
+        setIsProfilePopup(true);
     }
 
     const isAddPlacePopupOpen = () => {
-        setIsPlacePopup(!isPlacePopup);
+        setIsPlacePopup(true);
     }
 
     const closeAllPopups = () => {
         setIsAvatarPopup(false);
         setIsProfilePopup(false);
         setIsPlacePopup(false);
-        setSelectedCard(false);
+        setSelectedCard();
     }
 
     const handleCardClick = (card) => {
@@ -46,13 +42,23 @@ function App() {
             <Main onEditAvatar={isEditAvatarPopupOpen} onEditProfile={isEditProfilePopupOpen} onAddPlace={isAddPlacePopupOpen} onCardClick={handleCardClick} />
             <Footer />
             <PopupWithForm title="Редактировать профиль" name="edit-profile" textButton="Сохранить" isOpen={isProfilePopup} onClose={closeAllPopups}>
-                <ChildEditProfile />
+                <input id="name-input" className="popup__input popup__input_type_name" name="name" type="text" placeholder="Имя" minLength="2" maxLength="40" required />
+                <span className="popup__error name-input-error">Вы пропустили это поле</span>
+                <input id="description-input" className="popup__input popup__input_type_description" name="about" type="text"
+                    placeholder="О себе" minLength="2" maxLength="200" required />
+                <span className="popup__error description-input-error">Вы пропустили это поле</span>
             </PopupWithForm>
             <PopupWithForm title="Новое место" name="add-card" textButton="Сохранить" isOpen={isPlacePopup} onClose={closeAllPopups}>
-                <ChildAddCard />
+                <input id="name-place-input" className="popup__input popup__input_type_name-place" name="name" type="text" placeholder="Название"  minLength="2" maxLength="30" required />
+                <span className="popup__error name-place-input-error">Вы пропустили это поле</span>
+                <input id="link-input" className="popup__input popup__input_type_link" name="link" type="url"
+                    placeholder="Ссылка на картинку" required />
+                <span className="popup__error link-input-error">Вы пропустили это поле</span>
             </PopupWithForm>
             <PopupWithForm title="Обновить аватар" name="change-avatar" textButton="Сохранить" isOpen={isAvatarPopup} onClose={closeAllPopups}>
-                <ChildChangeAvatar />
+                <input id="link-avatar-input" className="popup__input popup__input_type_link" name="avatar" type="url"
+                    placeholder="Ссылка на картинку" required />
+                <span className="popup__error link-avatar-input-error">Вы пропустили это поле</span>
             </PopupWithForm>
             <PopupWithForm title="Вы уверены?" name="confirmation" textButton="Да" onClose={closeAllPopups} />
             <ImagePopup card={selectedCard} onClose={closeAllPopups} />

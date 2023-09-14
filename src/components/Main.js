@@ -9,12 +9,17 @@ function Main(props) {
     const [userDescription, setUserDescription] = useState('Исследователь океана');
     const [userAvatar, setUserAvatar] = useState(personAvatar);
 
+    function handleError(error) {
+        console.log(error);
+    }
+
     useEffect(() => {
         api.getUserInfo().then((data) => {
             setUserName(data.name);
             setUserDescription(data.about);
             setUserAvatar(data.avatar);
         })
+        .catch(handleError);
     }, [])
 
     const [cards, setCards] = useState([]);
@@ -23,6 +28,7 @@ function Main(props) {
         api.getCards().then((data) => {
             setCards(data);
         })
+        .catch(handleError);
     }, [])
 
     return (
