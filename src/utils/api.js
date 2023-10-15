@@ -1,9 +1,7 @@
 class Api {
   constructor(options) {
-    this._options = options;
     this._baseUrl = options.baseUrl;
     this._headers = options.headers;
-    this._avatar = document.querySelector('.profile__avatar-pic');
   }
   
   _getResponseData(res) {

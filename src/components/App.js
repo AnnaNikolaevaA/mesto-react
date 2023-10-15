@@ -12,31 +12,31 @@ import AddPlacePopup from "./AddPlacePopup";
 
 function App() {
 
-    const [isAvatarPopup, setIsAvatarPopup] = useState(false);
-    const [isProfilePopup, setIsProfilePopup] = useState(false);
-    const [isPlacePopup, setIsPlacePopup] = useState(false);
+    const [isAvatarPopupOpen, setIsAvatarPopupOpen] = useState(false);
+    const [isProfilePopupOpen, setIsProfilePopupOpen] = useState(false);
+    const [isPlacePopupOpen, setIsPlacePopupOpen] = useState(false);
 
     const [selectedCard, setSelectedCard] = useState(null);
-    const [currentUser, setСurrentUser] = useState(defaultCurrentUser);
+    const [currentUser, setCurrentUser] = useState(defaultCurrentUser);
 
     const [cards, setCards] = useState([]);
 
     const isEditAvatarPopupOpen = () => {
-        setIsAvatarPopup(true);
+        setIsAvatarPopupOpen(true);
     }
 
     const isEditProfilePopupOpen = () => {
-        setIsProfilePopup(true);
+        setIsProfilePopupOpen(true);
     }
 
     const isAddPlacePopupOpen = () => {
-        setIsPlacePopup(true);
+        setIsPlacePopupOpen(true);
     }
 
     const closeAllPopups = () => {
-        setIsAvatarPopup(false);
-        setIsProfilePopup(false);
-        setIsPlacePopup(false);
+        setIsAvatarPopupOpen(false);
+        setIsProfilePopupOpen(false);
+        setIsPlacePopupOpen(false);
         setSelectedCard(null);
     }
 
@@ -49,9 +49,11 @@ function App() {
     }
 
     useEffect(() => {
-        api.getUserInfo()
+        Promise.all([api.getUserInfo(), api.getCards()])
             .then((data) => {
-                setСurrentUser(data);
+                const [userInfo, cards] = data;
+                setCurrentUser(userInfo);
+                setCards(cards);
             })
             .catch(handleError);
     }, [])
@@ -59,7 +61,7 @@ function App() {
     function handleUpdateUser(data) {
         api.changeUserInfo(data)
             .then((newData) => {
-                setСurrentUser(newData);
+                setCurrentUser(newData);
                 closeAllPopups();
             })
             .catch(handleError);
@@ -68,19 +70,11 @@ function App() {
     function handleUpdateAvatar(data) {
         api.changeUserAvatar(data)
             .then((newData) => {
-                setСurrentUser(newData);
+                setCurrentUser(newData);
                 closeAllPopups();
             })
             .catch(handleError);
     }
-
-    useEffect(() => {
-        api.getCards()
-            .then((data) => {
-                setCards(data);
-            })
-            .catch(handleError);
-    }, [])
 
     function handleCardLike(card) {
         const isLiked = card.likes.some(i => i._id === currentUser._id);
@@ -95,7 +89,7 @@ function App() {
     function handleCardDelete(card) {
         api.deleteCard(card._id)
             .then(() => {
-                setCards(cards.filter((item) => item._id !== card._id));
+                setCards((state) => state.filter((item) => item._id !== card._id));
             })
             .catch(handleError);
     }
@@ -117,24 +111,23 @@ function App() {
                 onCardDelete={handleCardDelete}
                 onEditAvatar={isEditAvatarPopupOpen}
                 onEditProfile={isEditProfilePopupOpen}
-                onEditPlace={isAddPlacePopupOpen}
+                onAddPlace={isAddPlacePopupOpen}
                 onCardClick={handleCardClick}
-                handleError={handleError}
                 cards={cards}
             />
             <Footer />
             <EditProfilePopup
-                isOpen={isProfilePopup}
+                isOpen={isProfilePopupOpen}
                 onClose={closeAllPopups}
                 onUpdateUser={handleUpdateUser}
             />
             <AddPlacePopup
-                isOpen={isPlacePopup}
+                isOpen={isPlacePopupOpen}
                 onClose={closeAllPopups}
                 onAddPlace={handleAddPlaceSubmit}
             />
             <EditAvatarPopup
-                isOpen={isAvatarPopup}
+                isOpen={isAvatarPopupOpen}
                 onClose={closeAllPopups}
                 onUpdateAvatar={handleUpdateAvatar}
             /> 

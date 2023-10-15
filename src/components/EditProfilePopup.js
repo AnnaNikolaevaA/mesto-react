@@ -2,7 +2,7 @@ import PopupWithForm from "./PopupWithForm";
 import { useEffect, useState, useContext } from 'react';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-function EditProfilePopup(props) {
+function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
 
     const currentUser = useContext(CurrentUserContext);
 
@@ -20,23 +20,51 @@ function EditProfilePopup(props) {
     useEffect(() => {
         setName(currentUser.name);
         setDescription(currentUser.about)
-    }, [currentUser])
+    }, [currentUser, isOpen])
 
     function handleSubmit(e) {
         e.preventDefault();
         
-        props.onUpdateUser({
+        onUpdateUser({
           name,
           about: description,
         });
     }
 
     return (
-        <PopupWithForm onSubmit={handleSubmit} title="Редактировать профиль" name="edit-profile" textButton="Сохранить" isOpen={props.isOpen} onClose={props.onClose}>
-            <input id="name-input" onChange={changeNameInput} className="popup__input popup__input_type_name" value={name} name="name" type="text" placeholder="Имя" minLength="2" maxLength="40" required />
+        <PopupWithForm
+            onSubmit={handleSubmit}
+            title="Редактировать профиль"
+            name="edit-profile"
+            textButton="Сохранить"
+            isOpen={isOpen}
+            onClose={onClose}
+        >
+            <input
+                id="name-input"
+                onChange={changeNameInput}
+                className="popup__input popup__input_type_name"
+                value={name}
+                name="name"
+                type="text"
+                placeholder="Имя"
+                minLength="2"
+                maxLength="40"
+                required
+            />
             <span className="popup__error name-input-error">Вы пропустили это поле</span>
-            <input id="description-input"  onChange={changeDescriptionInput} className="popup__input popup__input_type_description" value={description} name="about" type="text"
-                placeholder="О себе" minLength="2" maxLength="200" required />
+            <input
+                id="description-input"
+                onChange={changeDescriptionInput}
+                className="popup__input popup__input_type_description"
+                value={description}
+                name="about"
+                type="text"
+                placeholder="О себе"
+                minLength="2"
+                maxLength="200"
+                required
+            />
             <span className="popup__error description-input-error">Вы пропустили это поле</span>
         </PopupWithForm>
     )
