@@ -23,7 +23,6 @@ function EditAvatarPopup({ onUpdateAvatar, isOpen, onClose }) {
         >
             <input
                 ref={avatarLink}
-                d="link-avatar-input"
                 className="popup__input popup__input_type_link"
                 name="avatar"
                 type="url"
